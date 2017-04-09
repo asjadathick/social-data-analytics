@@ -1,0 +1,28 @@
+from pymongo import MongoClient
+
+
+def post_date_count(collection):
+    """
+    Prints the number of posts grouped by date
+    """
+    date = []
+    date_posts_count = []
+    for post in collection.find():
+        current_post_date = post['time'].split()[0]
+        if current_post_date in date:
+            date_posts_count[date.index(current_post_date)] += 1
+        else:
+            date.append(current_post_date)
+            date_posts_count.append(1)
+
+    for i in range (len(date)):
+        print ("Date: %s\nNumber of posts: %s\n" % (date[i],date_posts_count[i]))
+
+if __name__ == "__main__":
+    #setting up
+    client = MongoClient()
+    db = client.test #change test to your db name
+    datapoints = db.datapoints #change datapoints to your collection name
+
+    #Count the number of post grouped by date
+    post_date_count(datapoints)
