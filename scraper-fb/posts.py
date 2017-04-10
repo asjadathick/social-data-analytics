@@ -5,15 +5,6 @@ import csv
 import time
 from pymongo import MongoClient
 
-app_id = "256796421435687"
-app_secret = "45ac48a47797d3e9a96c4d3249c4725b" # DO NOT SHARE WITH ANYONE!
-#page_id = raw_input("Please Paste Public Page Name:")
-page_id = "9322764314"
-
-access_token = app_id + "|" + app_secret
-
-#access_token = raw_input("Please Paste Your Access Token:")
-
 def request_until_succeed(url):
     req = urllib2.Request(url)
     success = False
@@ -22,12 +13,12 @@ def request_until_succeed(url):
             response = urllib2.urlopen(req)
             if response.getcode() == 200:
                 success = True
-        except Exception, e:
-            print e
+        except Exception as e:
+            print (e)
             time.sleep(5)
 
-            print "Error for URL %s: %s" % (url, datetime.datetime.now())
-            print "Retrying."
+            print ("Error for URL %s: %s" % (url, datetime.datetime.now()))
+            print ("Retrying.")
 
     return response.read()
 
@@ -163,7 +154,7 @@ def scrapeFacebookPageFeedStatus(page_id, access_token):
         num_processed = 0   # keep a count on how many we've processed
         scrape_starttime = datetime.datetime.now()
 
-        print "Scraping %s Facebook Page: %s\n" % (page_id, scrape_starttime)
+        print ("Scraping %s Facebook Page: %s\n" % (page_id, scrape_starttime))
 
         statuses = getFacebookPageFeedData(page_id, access_token, 100)
         # try:
@@ -174,11 +165,11 @@ def scrapeFacebookPageFeedStatus(page_id, access_token):
         #     return
 
         try:
-        	client = MongoClient()
-        	db = client.test		#Maybe change this later
-        	datapoints = db.datapoints
+            client = MongoClient()
+            db = client.test		#Maybe change this later
+            datapoints = db.datapoints
         except:
-        	print("It appears that I can't connect to the mongodb instance, bailing out!\n")
+            print("It appears that I can't connect to the mongodb instance, bailing out!\n")
 
 
         while has_next_page:
@@ -237,16 +228,16 @@ def scrapeFacebookPageFeedStatus(page_id, access_token):
                 
 
                 try:
-                	datapoints.insert_one(datapoint)
+                    datapoints.insert_one(datapoint)
                 except:
-                	print("Unable to insert into database\n")
+                    print("Unable to insert into database\n")
 
                 # output progress occasionally to make sure code is not
                 # stalling
                 num_processed += 1
                 if num_processed % 100 == 0:
-                    print "%s Statuses Processed: %s" % \
-                        (num_processed, datetime.datetime.now())
+                    print ("%s Statuses Processed: %s" %
+                           (num_processed, datetime.datetime.now()))
 
             # if there is no next page, we're done.
             if 'paging' in statuses.keys():
@@ -256,10 +247,21 @@ def scrapeFacebookPageFeedStatus(page_id, access_token):
                 has_next_page = False
 
 
-        print "\nDone!\n%s Statuses Processed in %s" % \
-                (num_processed, datetime.datetime.now() - scrape_starttime)
+        print ("\nDone!\n%s Statuses Processed in %s" %
+                (num_processed, datetime.datetime.now() - scrape_starttime))
 
     #conn.close()
 
 if __name__ == '__main__':
-    scrapeFacebookPageFeedStatus(page_id, access_token)
+    app_id = "256796421435687"
+    app_secret = "45ac48a47797d3e9a96c4d3249c4725b" # DO NOT SHARE WITH ANYONE!
+    #page_id = raw_input("Please Paste Public Page Name:")
+    page_id = "9322764314"
+
+    access_token = app_id + "|" + app_secret
+
+    #access_token = raw_input("Please Paste Your Access Token:")
+
+    while True:
+        scrapeFacebookPageFeedStatus(page_id, access_token)
+        time.sleep(7200)
