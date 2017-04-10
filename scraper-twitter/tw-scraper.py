@@ -7,6 +7,8 @@ import argparse
 import string
 import config
 import json
+import datetime
+from pymongo import MongoClient
 
 def get_parser():
     """Get parser for command line arguments."""
@@ -35,6 +37,15 @@ class MyListener(StreamListener):
             with open(self.outfile, 'a') as f:
                 f.write(data)
                 print(data)
+                try:
+                    client = MongoClient()
+                    db = client['social-data']
+                    tweet = db.tweets
+                    post = {"datetime": datetime.datetime.utcnow(), "document": data}
+                    tweet.insert_one(post)
+                except:
+                    print("Document insert failed!\n")
+
                 return True
         except BaseException as e:
             print("Error on_data: %s" % str(e))
