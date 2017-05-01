@@ -109,6 +109,9 @@ def statisticAnalysis():
     postsVsDate_list=[i[1] for i in z]
 
     #plotting the data
+    plt.xlabel("Date")
+    plt.ylabel("Number of posts")
+    plt.title("Number of posts against date")
     plt.plot_date(dates_float, postsVsDate_list, linestyle='-', xdate=True, ydate=False)
     plt.show()
 
