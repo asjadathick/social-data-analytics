@@ -60,6 +60,6 @@ def unusualAnalysis(post_count, socialMediaPost):
     #update mongoDB
     AnalysisDailyQuar.update_one({"quarter":str(current_quarter)},{'$set':{"quarter_count": str(quarter_count), "two_hour_avg": str(two_hour_avg), "input_count":str(input_count)}})
 
-if __name__ == "__main__":
-    #Perform statistical analysis on data in MongoDB
-    unusualAnalysis(100, "0")
+# if __name__ == "__main__":
+#     #Perform statistical analysis on data in MongoDB
+#     unusualAnalysis(100, "0")
