@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 import analytics
+import unusualAnalysis
 import datetime
 import os
 import csv
@@ -49,6 +50,13 @@ def domainAssociation(service, fromTime):
 	posts = analytics.getPostsByTime(service, fromTime, datetime.datetime.utcnow())
 	print "There have been %(num_posts)s posts to %(service)s since the epoch at %(epoch)s" % \
 		{"num_posts" : posts.count(), "epoch" : fromTime.strftime("%Y-%m-%d %H:%M:%S"), "service" : service}
+	#======================================
+	#Adding unusualAnalysis that reports on anything unusual
+	try:
+		unusualAnalysis(posts.count(), posts)
+	except:
+		print "Error in unusual Analysis. Report to Kevin"
+	#======================================	
 	for post in posts:
 		words = analytics.naturalLangProc(post['_id'])
 		for word in words:
