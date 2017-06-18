@@ -56,6 +56,9 @@ def domainAssociation(service, fromTime):
 		unusualAnalysis(posts.count(), posts)
 	except:
 		print "Error in unusual Analysis. Report to Kevin"
+		logfile = open('unusualLog.txt','a')
+		logfile.write('\nError in unusualAnalysis\n')
+		logfile.close()
 	#======================================	
 	for post in posts:
 		words = analytics.naturalLangProc(post['_id'])
